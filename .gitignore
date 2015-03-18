@@ -1,9 +1,6 @@
-/target
-/.classpath
-/.project
-/.settings
-/tomcat.*
-/.idea
-/*.iml
-/.springBeans
-*.svn
+target
+build
+.gradle
+.classpath
+.project
+.settings

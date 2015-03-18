@@ -1,32 +1,43 @@
-# Spring MVC Fulfillment Base Application
+## JAX-RS with Grizzly
 
-This is a simple web application that implements a web service and an HTML front end to accept Invoice Statement IDs and store them locally.
+JAX-RS is a great way to build RESTful services in Java. This is a very quick and simple example of a REST service that lets you upload a file and later download it.
 
-## Running the application locally
+## Build and Run
 
-Build with:
+Build the code with:
 
-    $ mvn clean install
+    $ mvn package
 
-Then run with:
+The POM file uses the [appassembler plugin](http://mojo.codehaus.org/appassembler/appassembler-maven-plugin/) to generate a wrapper script, so it's very simple to run the app. Simply execute:
 
-    $ java -jar target/dependency/webapp-runner.jar target/*.war
+    $ sh target/bin/app
+    Starting grizzly...
+    Oct 25, 2011 10:06:44 AM com.sun.grizzly.Controller logVersion
+    INFO: Starting Grizzly Framework 1.9.18-i - Tue Oct 25 10:06:44 PDT 2011
+    Jersey started with WADL available at http://localhost:9998/application.wadl.
 
-## Running on Heroku
+(On Windows use target/bin/app.bat instead)
 
-Clone this project locally:
+## Upload a file
 
-    $ git clone https://github.com/metadaddy-sfdc/spring-mvc-fulfillment-base.git
+    $ curl http://localhost:9998/blob -F "file=@myfile.ext;filename=myfile.ext"
 
-Create a new app on Heroku (make sure you have the [Heroku Toolbelt](http://toolbelt.heroku.com) installed):
+will upload the file `myfile.ext` from current directory.
 
-    $ heroku login
-    $ heroku create -s cedar
+## Download the file
 
-Upload the app to Heroku:
+    $ curl -O http://localhost:9998/blob/myfile.ext
 
-    $ git push heroku master
+will save the file you just uploaded in the current directory
 
-Open the app in your browser:
+## Deploying to Heroku
 
-    $ heroku open
+Assuming you're already set up with Heroku, all you need to do to is:
+
+1. heroku create --stack cedar
+2. git push heroku master
+
+It's that simple. 
+
+Note that files uploaded to Heroku using this app will get stored on the ephemeral disk space of the dyno receiving the file. These files are lost each time dynos are restarted, so you have a bit more homework to do before you have your own personal dropbox service.
+
